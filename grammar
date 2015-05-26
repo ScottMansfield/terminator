@@ -1,0 +1,25 @@
+robots-txt: robots-txt-part*
+
+robots-txt-part: line-remainder|agentspec
+
+line-remainder: whitespace (comment|newline)
+
+whitespace: (\t|\v| )*
+
+comment: #<utf-9 text> newline
+
+newline: (\r|\n|\r\n)
+
+agentspec: user-agent newline* rule*
+
+user-agent: "User-agent: " identifier comment*
+
+identifier: ([0-9a-zA-Z_-.:/\\ ]+|*)
+
+rule: allow|disallow whitespace line-remainder
+
+allow: "Allow: " path
+
+disallow: "Disallow: " path
+
+path: [0-9a-zA-Z-_:/\\]+ <valid path according to java.net.URI>
