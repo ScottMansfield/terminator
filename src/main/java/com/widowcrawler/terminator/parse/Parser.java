@@ -13,22 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.widowcrawler.terminator;
+package com.widowcrawler.terminator.parse;
 
 import com.widowcrawler.terminator.model.RobotsTxt;
-import com.widowcrawler.terminator.parse.Parser;
 
-import java.io.InputStream;
+import java.io.*;
 
 /**
- * @author Scott Mansfield <sgmansf@gmail.com>
+ * @author Scott Mansfield
  */
-public class Terminator {
-    public static RobotsTxt parse(String data) {
-        return new Parser(data).parse();
+public class Parser {
+
+    private BufferedReader reader;
+
+    public Parser(String data) {
+        this(new ByteArrayInputStream(data.getBytes()));
     }
 
-    public static RobotsTxt parse(InputStream inputStream) {
-        return new Parser(inputStream).parse();
+    public Parser(InputStream inputStream) {
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        this.reader = new BufferedReader(inputStreamReader);
+    }
+
+    public RobotsTxt parse() {
+        reader.lines().forEachOrdered(this::processLine);
+    }
+
+    private void processLine(String line) {
+
     }
 }
