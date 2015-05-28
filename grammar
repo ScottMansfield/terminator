@@ -1,12 +1,12 @@
 robots-txt: robots-txt-part*
 
-robots-txt-part: line-remainder|agentspec
+robots-txt-part: line-remainder|agentspec|sitemapref
 
 line-remainder: whitespace (comment|newline)
 
 whitespace: (\t|\v| )*
 
-comment: #<utf-9 text> newline
+comment: #<utf-8 text> newline
 
 newline: (\r|\n|\r\n)
 
@@ -18,8 +18,10 @@ identifier: ([0-9a-zA-Z_-.:/\\ ]+|*)
 
 rule: allow|disallow whitespace line-remainder
 
-allow: "Allow: " path
+allow: "Allow:" whitespace path
 
-disallow: "Disallow: " path
+disallow: "Disallow:" whitespace path
 
-path: [0-9a-zA-Z-_:/\\]+ <valid path according to java.net.URI>
+path: [^\r\n\t ]+
+
+sitemapref: "Sitemap: "
