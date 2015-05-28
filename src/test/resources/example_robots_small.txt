@@ -1,0 +1,15 @@
+User-agent: foo
+Disallow: /search
+Allow: /search/about
+Disallow: /books?*output=*
+Allow: /books?*q=subject:*
+Allow: /chromecast/setup/$
+User-agent: bar
+Disallow: /searchbar
+Allow: /search/aboutbar
+Disallow: /books?*output=*bar
+Allow: /books?*q=subject:*bar
+Allow: /chromecast/setup/bar$
+#Sitemap: https://www.google.com/edu/sitemap1.xml
+#Sitemap: https://www.google.com/baz/sitemap2.xml
+#Sitemap: https://www.google.com/buz/sitemap3.xml
