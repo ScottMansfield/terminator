@@ -15,6 +15,7 @@
  */
 package com.widowcrawler.terminator.parse;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import java.io.FileInputStream;
@@ -25,7 +26,7 @@ import java.io.InputStream;
  */
 public class ParserTest {
 
-    @Test(timeout = 10000)
+    //@Test(timeout = 10000)
     public void parse_validRobotsTxtSmall_parsesFile() throws Exception {
         InputStream inputStream = new FileInputStream("src/test/resources/example_robots_small.txt");
 
@@ -49,5 +50,25 @@ public class ParserTest {
         long duration = System.nanoTime() - start;
 
         System.out.println("Duration: " + duration);
+    }
+
+    @Test(timeout = 10000)
+    public void parse_validRobotsTxtLarge1000Times_parsesFile() throws Exception {
+        long totalDuration = 0L;
+
+        InputStream inputStream = new FileInputStream("src/test/resources/example_robots.txt");
+        String data = IOUtils.toString(inputStream);
+
+        for (int i = 0; i < 1000; i++) {
+
+            Parser parser = new Parser(data);
+
+            long start = System.nanoTime();
+            parser.parse();
+            totalDuration += System.nanoTime() - start;
+        }
+
+        System.out.println("Total Duration: " + totalDuration);
+        System.out.println("Average Duration: " + (totalDuration / 1000D));
     }
 }

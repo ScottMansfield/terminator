@@ -80,14 +80,14 @@ public class Parser {
     //////////////////////////////////
 
     private void robotsTxt() {
-        System.out.println("robotsTxt()");
+        //System.out.println("robotsTxt()");
         while (!isEndOfFile()) {
             robotsTxtPart();
         }
     }
 
     private void robotsTxtPart() {
-        System.out.println("robotsTxtPart()");
+        //System.out.println("robotsTxtPart()");
         whitespace();
 
         if (isEndline()) {
@@ -101,14 +101,14 @@ public class Parser {
     }
 
     private void whitespace() {
-        System.out.println("whitespace()");
+        //System.out.println("whitespace()");
         while (isWhitespace()) {
             next();
         }
     }
 
     private void commentLine() {
-        System.out.println("commentLine()");
+        //System.out.println("commentLine()");
         while (!isEndline() && !isEndOfFile()) {
             next();
         }
@@ -119,7 +119,7 @@ public class Parser {
     }
 
     private void endline() {
-        System.out.println("endline()");
+        //System.out.println("endline()");
         if (current() == '\n') {
             next();
         } else if (current() == '\r') {
@@ -132,7 +132,7 @@ public class Parser {
     }
 
     private void agentSpec() {
-        System.out.println("agentSpec()");
+        //System.out.println("agentSpec()");
         // TODO: store this somewhere
         String userAgent = userAgent();
         Set<Rule> ruleSet = new HashSet<>();
@@ -144,8 +144,8 @@ public class Parser {
 
             if (rule != null) {
                 ruleSet.add(rule);
-                System.out.println(rule.getRuleType());
-                System.out.println(rule.getPathMatch());
+                //System.out.println(rule.getRuleType());
+                //System.out.println(rule.getPathMatch());
             }
 
             whitespace();
@@ -155,7 +155,7 @@ public class Parser {
     }
 
     private String userAgent() {
-        System.out.println("userAgent()");
+        //System.out.println("userAgent()");
         skip(USER_AGENT.length());
         whitespace();
 
@@ -168,12 +168,12 @@ public class Parser {
             endline();
         }
 
-        System.out.println(userAgent);
+        //System.out.println(userAgent);
         return userAgent;
     }
 
     private String userAgentIdentifier() {
-        System.out.println("userAgentIdentifier()");
+        //System.out.println("userAgentIdentifier()");
         int start = dataPtr;
 
         while (!isCommentStart() && !isEndline()) {
@@ -184,7 +184,7 @@ public class Parser {
     }
 
     private Rule ruleLine() {
-        System.out.println("ruleLine()");
+        //System.out.println("ruleLine()");
         if (isEndline()) {
             endline();
         } else if (isCommentStart()) {
@@ -199,7 +199,7 @@ public class Parser {
     }
 
     private Rule rule() {
-        System.out.println("rule()");
+        //System.out.println("rule()");
         Rule rule;
 
         if (isAllowRule()) {
@@ -220,7 +220,7 @@ public class Parser {
     }
 
     private Rule allowRule() {
-        System.out.println("allowRule()");
+        //System.out.println("allowRule()");
         skip(ALLOW.length());
         whitespace();
         String path = rulePath();
@@ -229,7 +229,7 @@ public class Parser {
     }
 
     private Rule disallowRule() {
-        System.out.println("disallowRule()");
+        //System.out.println("disallowRule()");
         skip(DISALLOW.length());
         whitespace();
         String path = rulePath();
@@ -238,7 +238,7 @@ public class Parser {
     }
 
     private String rulePath() {
-        System.out.println("rulePath()");
+        //System.out.println("rulePath()");
         int start = dataPtr;
 
         while (!isCommentStart() && !isEndline() && !isWhitespace()) {
