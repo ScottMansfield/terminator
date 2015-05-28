@@ -18,17 +18,18 @@ package com.widowcrawler.terminator;
 import com.widowcrawler.terminator.model.RobotsTxt;
 import com.widowcrawler.terminator.parse.Parser;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
  * @author Scott Mansfield <sgmansf@gmail.com>
  */
 public class Terminator {
-    public static RobotsTxt parse(String data) {
+    public static RobotsTxt parse(String data) throws IOException {
         return new Parser(data).parse();
     }
 
-    public static RobotsTxt parse(InputStream inputStream) {
+    public static RobotsTxt parse(InputStream inputStream) throws IOException {
         return new Parser(inputStream).parse();
     }
 }
