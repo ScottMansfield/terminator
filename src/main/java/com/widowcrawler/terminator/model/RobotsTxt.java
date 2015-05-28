@@ -15,13 +15,13 @@
  */
 package com.widowcrawler.terminator.model;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Scott Mansfield
  */
 public class RobotsTxt {
-    private Map<String, UserAgentRuleSet> ruleSets;
-    private List<String> siteMapRefs;
+    private Map<String, Set<Rule>> ruleSets;
+    private Set<String> siteMapRefs;
 }

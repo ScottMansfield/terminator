@@ -20,4 +20,18 @@ package com.widowcrawler.terminator.model;
  */
 public class Rule {
     private RuleType ruleType;
+    private String pathMatch;
+
+    public Rule (RuleType ruleType, String pathMatch) {
+        this.ruleType = ruleType;
+        this.pathMatch = pathMatch;
+    }
+
+    public RuleType getRuleType() {
+        return ruleType;
+    }
+
+    public String getPathMatch() {
+        return pathMatch;
+    }
 }
