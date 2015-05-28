@@ -1,27 +1,29 @@
-robots-txt: robots-txt-part*
+robotsTxt: robotsTxtPart*
 
-robots-txt-part: line-remainder|agentspec|sitemapref
+robotsTxtPart: whitespace (endline|commentLine|agentspec|sitemapref)
 
-line-remainder: whitespace (comment|newline)
+whitespace: (\t| )*
 
-whitespace: (\t|\v| )*
+endline: (\r|\n|\r\n)
 
-comment: #<utf-8 text> newline
+commentLine: comment endline
 
-newline: (\r|\n|\r\n)
+comment: #[^\r\n]*
 
-agentspec: user-agent newline* rule*
+agentspec: userAgent whitespace (ruleLine whitespace)*
 
-user-agent: "User-agent: " identifier comment*
+userAgent: "User-agent:" whitespace userAgentIdentifier (commentLine|endline)
 
-identifier: ([0-9a-zA-Z_-.:/\\ ]+|*)
+userAgentIdentifier: [^\r\n#]* whitespace
 
-rule: allow|disallow whitespace line-remainder
+ruleLine: (rule|commentLine|endLine)
 
-allow: "Allow:" whitespace path
+rule: allow|disallow (commentLine|endline)
 
-disallow: "Disallow:" whitespace path
+allow: "Allow:" whitespace rulePath
 
-path: [^\r\n\t ]+
+disallow: "Disallow:" whitespace rulePath
+
+rulePath: [^\r\n\t #]+ whitespace
 
 sitemapref: "Sitemap: "
