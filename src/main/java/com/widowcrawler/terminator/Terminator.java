@@ -25,7 +25,7 @@ import java.io.InputStream;
  * @author Scott Mansfield <sgmansf@gmail.com>
  */
 public class Terminator {
-    public static RobotsTxt parse(String data) throws IOException {
+    public static RobotsTxt parse(String data) {
         return new Parser(data).parse();
     }
 

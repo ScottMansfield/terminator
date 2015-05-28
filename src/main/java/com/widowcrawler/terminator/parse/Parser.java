@@ -48,7 +48,7 @@ public class Parser {
     private Map<String, Set<Rule>> ruleSets;
     private Set<String> siteMapRefs;
 
-    public Parser(String data) throws IOException {
+    public Parser(String data) {
         this.data = data;
         this.dataPtr = 0;
         this.ruleSets = new HashMap<>();
@@ -56,7 +56,16 @@ public class Parser {
     }
 
     public Parser(InputStream inputStream) throws IOException {
-        this(IOUtils.toString(inputStream, "UTF-8"));
+        this(readStreamAlwaysClose(inputStream));
+    }
+
+    // ouch, seems hacky but it works
+    private static String readStreamAlwaysClose(InputStream inputStream) throws IOException {
+        try {
+            return IOUtils.toString(inputStream, "UTF-8");
+        } finally {
+            inputStream.close();
+        }
     }
 
     public RobotsTxt parse() {
