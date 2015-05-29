@@ -15,6 +15,7 @@
  */
 package com.widowcrawler.terminator.parse;
 
+import com.widowcrawler.terminator.ParseException;
 import com.widowcrawler.terminator.model.RobotsTxt;
 import com.widowcrawler.terminator.model.Rule;
 import com.widowcrawler.terminator.model.RuleType;
@@ -69,7 +70,7 @@ public class Parser {
         }
     }
 
-    public RobotsTxt parse() {
+    public RobotsTxt parse() throws ParseException {
         robotsTxt();
 
         return new RobotsTxt(ruleSets, siteMapRefs);
@@ -79,14 +80,14 @@ public class Parser {
     // Begin recursive descent parser
     //////////////////////////////////
 
-    private void robotsTxt() {
+    private void robotsTxt() throws ParseException {
         //System.out.println("robotsTxt()");
         while (!isEndOfFile()) {
             robotsTxtPart();
         }
     }
 
-    private void robotsTxtPart() {
+    private void robotsTxtPart() throws ParseException {
         //System.out.println("robotsTxtPart()");
         whitespace();
 
@@ -98,8 +99,9 @@ public class Parser {
             agentSpec();
         } else if (isSitemapRefStart()) {
             sitemapRef();
+        } else {
+            throw new ParseException(dataPtr, "Invalid line");
         }
-        // TODO: Throw error as an else clause
     }
 
     private void whitespace() {
@@ -109,7 +111,7 @@ public class Parser {
         }
     }
 
-    private void commentLine() {
+    private void commentLine() throws ParseException {
         //System.out.println("commentLine()");
         while (!isEndOfFile() && !isEndline()) {
             next();
@@ -118,7 +120,7 @@ public class Parser {
         endline();
     }
 
-    private void endline() {
+    private void endline() throws ParseException {
         //System.out.println("endline()");
         if (isEndOfFile()) return;
 
@@ -129,13 +131,13 @@ public class Parser {
             if (current() == '\n') {
                 next();
             }
+        } else {
+            throw new ParseException(dataPtr, "Unexpected character: " + current());
         }
-        // TODO: Throw error as an else clause
     }
 
-    private void agentSpec() {
+    private void agentSpec() throws ParseException {
         //System.out.println("agentSpec()");
-        // TODO: store this somewhere
         String userAgent = userAgent();
         Set<Rule> ruleSet = new HashSet<>();
 
@@ -156,7 +158,7 @@ public class Parser {
         ruleSets.put(userAgent, ruleSet);
     }
 
-    private String userAgent() {
+    private String userAgent() throws ParseException {
         //System.out.println("userAgent()");
         skip(USER_AGENT.length());
         whitespace();
@@ -165,12 +167,12 @@ public class Parser {
 
         if (isCommentStart()) {
             commentLine();
-        // TODO: Throw error as an else clause
-        } else {
+        } else if (isEndline()) {
             endline();
+        } else {
+            throw new ParseException(dataPtr, "Expected a User-agent line.");
         }
 
-        //System.out.println(userAgent);
         return userAgent;
     }
 
@@ -185,37 +187,40 @@ public class Parser {
         return StringUtils.trimToEmpty(data.substring(start, dataPtr));
     }
 
-    private Rule ruleLine() {
+    private Rule ruleLine() throws ParseException {
         //System.out.println("ruleLine()");
         if (isEndline()) {
             endline();
         } else if (isCommentStart()) {
             commentLine();
-        // TODO: Throw error as an else clause
-        } else { // isRuleStart
+        } else if (isRuleStart()) {
             return rule();
+        } else {
+            throw new ParseException(dataPtr, "Expected either 'Allow:' or 'Disallow:' to start a rule");
         }
 
         // blank lines return null
         return null;
     }
 
-    private Rule rule() {
+    private Rule rule() throws ParseException {
         //System.out.println("rule()");
         Rule rule;
 
         if (isAllowRule()) {
             rule = allowRule();
-        // TODO: Throw error as an else clause
-        } else { // isDisallowRule
+        } else if (isDisallowRule()) {
             rule = disallowRule();
+        } else {
+            throw new ParseException(dataPtr, "Expected either 'Allow:' or 'Disallow:' to start a rule");
         }
 
         if (isEndline()) {
             endline();
-        // TODO: Throw error as an else clause
-        } else { // isCommentStart()
+        } else if (isCommentStart()) {
             commentLine();
+        } else {
+            throw new ParseException(dataPtr, "Unexpected text after rule path");
         }
 
         return rule;
@@ -254,7 +259,7 @@ public class Parser {
         return path;
     }
 
-    private void sitemapRef() {
+    private void sitemapRef() throws ParseException {
         //System.out.println("sitemapRef");
         skip(SITEMAP.length());
         whitespace();

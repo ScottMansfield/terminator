@@ -25,11 +25,11 @@ import java.io.InputStream;
  * @author Scott Mansfield <sgmansf@gmail.com>
  */
 public class Terminator {
-    public static RobotsTxt parse(String data) {
+    public static RobotsTxt parse(String data) throws ParseException {
         return new Parser(data).parse();
     }
 
-    public static RobotsTxt parse(InputStream inputStream) throws IOException {
+    public static RobotsTxt parse(InputStream inputStream) throws IOException, ParseException {
         return new Parser(inputStream).parse();
     }
 }
