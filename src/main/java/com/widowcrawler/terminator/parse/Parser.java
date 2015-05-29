@@ -72,8 +72,7 @@ public class Parser {
     public RobotsTxt parse() {
         robotsTxt();
 
-        // TODO: something useful here
-        return null;
+        return new RobotsTxt(ruleSets, siteMapRefs);
     }
 
     //////////////////////////////////
@@ -105,24 +104,24 @@ public class Parser {
 
     private void whitespace() {
         //System.out.println("whitespace()");
-        while (isWhitespace()) {
+        while (!isEndOfFile() && isWhitespace()) {
             next();
         }
     }
 
     private void commentLine() {
         //System.out.println("commentLine()");
-        while (!isEndline() && !isEndOfFile()) {
+        while (!isEndOfFile() && !isEndline()) {
             next();
         }
 
-        if (!isEndOfFile()) {
-            endline();
-        }
+        endline();
     }
 
     private void endline() {
         //System.out.println("endline()");
+        if (isEndOfFile()) return;
+
         if (current() == '\n') {
             next();
         } else if (current() == '\r') {
@@ -179,7 +178,7 @@ public class Parser {
         //System.out.println("userAgentIdentifier()");
         int start = dataPtr;
 
-        while (!isCommentStart() && !isEndline()) {
+        while (!isEndOfFile() && !isCommentStart() && !isEndline()) {
             next();
         }
 
@@ -244,7 +243,7 @@ public class Parser {
         //System.out.println("rulePath()");
         int start = dataPtr;
 
-        while (!isCommentStart() && !isEndline() && !isWhitespace()) {
+        while (!isEndOfFile() && !isCommentStart() && !isEndline() && !isWhitespace()) {
             next();
         }
 
