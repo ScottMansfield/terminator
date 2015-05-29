@@ -33,6 +33,7 @@ public class Parser {
     public static final String USER_AGENT = "User-Agent:";
     public static final String ALLOW = "Allow:";
     public static final String DISALLOW = "Disallow:";
+    public static final String SITEMAP = "Sitemap:";
 
     private static final List<Character> whitespaceChars;
     private static final List<Character> endlineChars;
@@ -96,6 +97,8 @@ public class Parser {
             commentLine();
         } else if (isAgentSpecStart()) {
             agentSpec();
+        } else if (isSitemapRefStart()) {
+            sitemapRef();
         }
         // TODO: Throw error as an else clause
     }
@@ -252,6 +255,32 @@ public class Parser {
         return path;
     }
 
+    private void sitemapRef() {
+        //System.out.println("sitemapRef");
+        skip(SITEMAP.length());
+        whitespace();
+
+        String url = sitemapRefIdentifier();
+        siteMapRefs.add(url);
+
+        endline();
+    }
+
+    private String sitemapRefIdentifier() {
+        //System.out.println("sitemapRefIdentifier()");
+        int start = dataPtr;
+
+        while (!isEndOfFile() && !isCommentStart() && !isEndline() && !isWhitespace()) {
+            next();
+        }
+
+        String url = StringUtils.trimToEmpty(data.substring(start, dataPtr));
+
+        whitespace();
+
+        return url;
+    }
+
     //////////////////////////
     // Begin helper functions
     //////////////////////////
@@ -304,6 +333,10 @@ public class Parser {
 
     private boolean isEndOfFile() {
         return dataPtr >= data.length();
+    }
+
+    private boolean isSitemapRefStart() {
+        return !isEndOfFile() && matchStringStart(SITEMAP);
     }
 
     private boolean matchStringStart(String toMatch) {
