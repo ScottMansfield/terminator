@@ -24,4 +24,17 @@ import java.util.Set;
 public class RobotsTxt {
     private Map<String, Set<Rule>> ruleSets;
     private Set<String> siteMapRefs;
+
+    public RobotsTxt(Map<String, Set<Rule>> ruleSets, Set<String> siteMapRefs) {
+        this.ruleSets = ruleSets;
+        this.siteMapRefs = siteMapRefs;
+    }
+
+    public Map<String, Set<Rule>> getRuleSets() {
+        return ruleSets;
+    }
+
+    public Set<String> getSiteMapRefs() {
+        return siteMapRefs;
+    }
 }
