@@ -1,15 +1,24 @@
-User-agent: foo
+User-agent: foo #Comment after
+
+
 Disallow: /search
 Allow: /search/about
 Disallow: /books?*output=*
 Allow: /books?*q=subject:*
 Allow: /chromecast/setup/$
+
+# This is a comment about bar
 User-agent: bar
 Disallow: /searchbar
+    # A commment in the middle
 Allow: /search/aboutbar
 Disallow: /books?*output=*bar
-Allow: /books?*q=subject:*bar
-Allow: /chromecast/setup/bar$
-#Sitemap: https://www.google.com/edu/sitemap1.xml
-#Sitemap: https://www.google.com/baz/sitemap2.xml
-#Sitemap: https://www.google.com/buz/sitemap3.xml
+Allow: /books?*q=subject:*bar # A comment after
+Allow: /chromecast/setup/bar$#nospacecomment
+
+# A comment about the Sitemap
+Sitemap: https://www.google.com/edu/sitemap1.xml
+Sitemap: https://www.google.com/baz/sitemap2.xml
+Sitemap: https://www.google.com/buz/sitemap3.xml
+
+
