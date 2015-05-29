@@ -15,6 +15,7 @@
  */
 package com.widowcrawler.terminator.parse;
 
+import com.widowcrawler.terminator.model.RobotsTxt;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
@@ -26,20 +27,31 @@ import java.io.InputStream;
  */
 public class ParserTest {
 
-    //@Test(timeout = 10000)
+    @Test(timeout = 1000)
     public void parse_validRobotsTxtSmall_parsesFile() throws Exception {
         InputStream inputStream = new FileInputStream("src/test/resources/example_robots_small.txt");
 
         Parser parser = new Parser(inputStream);
 
         long start = System.nanoTime();
-        parser.parse();
+        RobotsTxt robotsTxt = parser.parse();
         long duration = System.nanoTime() - start;
 
         System.out.println("Duration: " + duration);
+
+        robotsTxt.getRuleSets().forEach( (userAgent, rules) -> {
+                    System.out.println("User-agent: " + userAgent);
+
+                    rules.forEach(rule -> System.out.println(rule.getRuleType().toString() + ": " + rule.getPathMatch()));
+                }
+        );
+
+        System.out.println("\n\n");
+
+        robotsTxt.getSiteMapRefs().forEach(ref -> System.out.println("Sitemap: " + ref));
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 1000)
     public void parse_validRobotsTxtLarge_parsesFile() throws Exception {
         InputStream inputStream = new FileInputStream("src/test/resources/example_robots.txt");
 
