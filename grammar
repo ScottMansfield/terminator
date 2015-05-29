@@ -1,6 +1,6 @@
 robotsTxt: robotsTxtPart*
 
-robotsTxtPart: whitespace (endline|commentLine|agentspec|sitemapref)
+robotsTxtPart: whitespace (endline|commentLine|agentspec|sitemapRef)
 
 whitespace: (\t| )*
 
@@ -26,4 +26,6 @@ disallow: "Disallow:" whitespace rulePath
 
 rulePath: [^\r\n\t #]+ whitespace
 
-sitemapref: "Sitemap: "
+sitemapRef: "Sitemap:" whitespace sitemapRefIdentifier endline
+
+sitmapRefIdentifier: [^\r\n\t #]+ whitespace
