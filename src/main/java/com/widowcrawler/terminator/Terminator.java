@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * @author Scott Mansfield <sgmansf@gmail.com>
+ * @author Scott Mansfield
  */
 public class Terminator {
     public static RobotsTxt parse(String data) throws ParseException {
