@@ -1,7 +1,12 @@
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 sourceCompatibility = 1.8
-version = '1.0'
+
+group = 'com.widowcrawler'
+archivesBaseName = 'terminator'
+version = '0.1'
 
 repositories {
     mavenCentral()
@@ -11,5 +16,85 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'org.apache.commons:commons-lang3:3.4'
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile 'junit:junit:4.12'
+}
+
+// Publishing bits
+/*
+def isDevBuild = false
+def isCiBuild = false
+def isReleaseBuild = false
+
+//set build variables based on build type (release, continuous integration, development)
+if(hasProperty("release")) {
+    isReleaseBuild = true
+} else if (hasProperty("ci")) {
+    isCiBuild = true
+    version += "-SNAPSHOT"
+} else {
+    isDevBuild = true
+}*/
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from tasks.javadoc.destinationDir
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'Terminator'
+                packaging 'jar'
+                description 'Terminator is a parser for robots.txt files.'
+                url 'https://github.com/ScottMansfield/terminator'
+
+                scm {
+                    url 'https://github.com/ScottMansfield/terminator'
+                    connection 'scm:git@github.com:ScottMansfield/terminator.git'
+                    developerConnection 'scm:git@github.com:ScottMansfield/terminator.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'ScottMansfield'
+                        name 'Scott Mansfield'
+                        email 'sgmansf@gmail.com'
+                    }
+                }
+            }
+        }
+    }
 }
