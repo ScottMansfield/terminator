@@ -18,6 +18,8 @@ package com.widowcrawler.terminator;
 import com.widowcrawler.terminator.model.RobotsTxt;
 import com.widowcrawler.terminator.parse.Parser;
 
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -25,7 +27,12 @@ import java.io.InputStream;
  * @author Scott Mansfield
  */
 public class Terminator {
-    public static RobotsTxt parse(String data) throws ParseException {
+    public static RobotsTxt parse(String url) throws ParseException {
+
+        Invocation invocation = ClientBuilder.newClient().target(url).request().buildGet();
+
+        String data = invocation.invoke().readEntity(String.class);
+
         return new Parser(data).parse();
     }
 
