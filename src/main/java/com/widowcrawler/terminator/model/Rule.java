@@ -15,6 +15,8 @@
  */
 package com.widowcrawler.terminator.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @author Scott Mansfield
  */
@@ -33,5 +35,32 @@ public class Rule {
 
     public String getPathMatch() {
         return pathMatch;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 1;
+
+        if (ruleType != null) {
+            hash += 37 * ruleType.hashCode();
+        }
+
+        if (getPathMatch() != null) {
+            hash += 11 * pathMatch.hashCode();
+        }
+
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Rule)) {
+            return false;
+        }
+
+        Rule other = (Rule) obj;
+
+        return this.ruleType == other.getRuleType() &&
+                StringUtils.equals(this.getPathMatch(), other.getPathMatch());
     }
 }

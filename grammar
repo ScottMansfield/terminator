@@ -10,7 +10,9 @@ commentLine: comment endline
 
 comment: #[^\r\n]*
 
-agentspec: userAgent whitespace (ruleLine whitespace)*
+agentspec: userAgents whitespace (ruleLine whitespace)*
+
+userAgents: userAgent+
 
 userAgent: "User-agent:" whitespace userAgentIdentifier (commentLine|endline)
 

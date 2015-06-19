@@ -16,16 +16,49 @@
 package com.widowcrawler.terminator.parse;
 
 import com.widowcrawler.terminator.model.RobotsTxt;
+import com.widowcrawler.terminator.model.Rule;
+import com.widowcrawler.terminator.model.RuleType;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
+
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 /**
  * @author Scott Mansfield
  */
 public class ParserTest {
+
+    @Test
+    public void parse_validRobotsTxtTwoUserAgents_bothRuleSetsEqual() throws Exception {
+        // Arrange
+        String file = "User-agent: foo\n" +
+                      "User-agent: bar\n" +
+                      "Allow: /baz\n" +
+                      "Disallow: /quux";
+        InputStream inputStream = new ByteArrayInputStream(file.getBytes());
+
+        Parser parser = new Parser(inputStream);
+
+        // Act
+        RobotsTxt robotsTxt = parser.parse();
+
+        // Assert
+        assertEquals(2, robotsTxt.getRuleSets().size());
+
+        assertEquals(2, robotsTxt.getRuleSets().get("foo").size());
+        assertEquals(2, robotsTxt.getRuleSets().get("bar").size());
+
+        assertThat(robotsTxt.getRuleSets().get("foo"), hasItem(new Rule(RuleType.ALLOW, "/baz")));
+        assertThat(robotsTxt.getRuleSets().get("foo"), hasItem(new Rule(RuleType.DISALLOW, "/quux")));
+
+        assertThat(robotsTxt.getRuleSets().get("bar"), hasItem(new Rule(RuleType.ALLOW, "/baz")));
+        assertThat(robotsTxt.getRuleSets().get("bar"), hasItem(new Rule(RuleType.DISALLOW, "/quux")));
+    }
 
     @Test(timeout = 1000)
     public void parse_validRobotsTxtSmall_parsesFile() throws Exception {

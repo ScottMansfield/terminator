@@ -27,6 +27,12 @@ import java.io.InputStream;
 import java.util.*;
 
 /**
+ * Parses robots.txt files.
+ *
+ * Attempts to follow the draft for a standard, but makes no promises.
+ *
+ * Draft: http://www.robotstxt.org/norobots-rfc.txt
+ *
  * @author Scott Mansfield
  */
 public class Parser {
@@ -95,7 +101,7 @@ public class Parser {
             endline();
         } else if (isCommentStart()) {
             commentLine();
-        } else if (isAgentSpecStart()) {
+        } else if (isUserAgentStart()) {
             agentSpec();
         } else if (isSitemapRefStart()) {
             sitemapRef();
@@ -138,7 +144,7 @@ public class Parser {
 
     private void agentSpec() throws ParseException {
         //System.out.println("agentSpec()");
-        String userAgent = userAgent();
+        Set<String> userAgents = userAgents();
         Set<Rule> ruleSet = new HashSet<>();
 
         whitespace();
@@ -155,7 +161,17 @@ public class Parser {
             whitespace();
         }
 
-        ruleSets.put(userAgent, ruleSet);
+        userAgents.forEach(userAgent -> ruleSets.put(userAgent, ruleSet));
+    }
+
+    private Set<String> userAgents() throws ParseException {
+        Set<String> userAgents = new HashSet<>();
+
+        while (isUserAgentStart()) {
+            userAgents.add(userAgent());
+        }
+
+        return userAgents;
     }
 
     private String userAgent() throws ParseException {
@@ -219,7 +235,7 @@ public class Parser {
             endline();
         } else if (isCommentStart()) {
             commentLine();
-        } else {
+        } else if (!isEndOfFile()) {
             throw new ParseException(dataPtr, "Unexpected text after rule path");
         }
 
@@ -303,6 +319,7 @@ public class Parser {
         }
     }
 
+    // TODO: Maybe these ought to be case-agnostic
     private boolean isWhitespace() {
         return !isEndOfFile() && whitespaceChars.contains(current());
     }
@@ -315,7 +332,7 @@ public class Parser {
         return !isEndOfFile() && endlineChars.contains(current());
     }
 
-    private boolean isAgentSpecStart() {
+    private boolean isUserAgentStart() {
         return !isEndOfFile() && matchStringStart(USER_AGENT);
     }
 
