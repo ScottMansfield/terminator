@@ -1,0 +1,14 @@
+/
+/foo
+/foo/bar
+/fop
+/baz/biz
+
+
+      CoreNode -----_
+     /      |        \
+    /fo  "/baz/biz"  "/"
+  /    \
+"/fop"   o
+       /   \
+	"/foo"  "/foo/bar"
