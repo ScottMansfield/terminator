@@ -16,7 +16,6 @@
 package com.widowcrawler.terminator.trie;
 
 import com.widowcrawler.terminator.model.Rule;
-import sun.text.normalizer.Trie;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,16 +28,16 @@ public class TrieNode {
     private TrieNode parent;
     private int diffIndex;
     private String prefix;
-    private Rule rule;
     private Map<Character, TrieNode> children;
+    private Map<Character, Rule> rules;
 
-    public TrieNode(TrieNode parent, int diffIndex, String prefix, Rule rule) {
+    public TrieNode(TrieNode parent, int diffIndex, String prefix) {
         this.parent = parent;
         this.diffIndex = diffIndex;
         this.prefix = prefix;
-        this.rule = rule;
 
         this.children = new HashMap<>();
+        this.rules = new HashMap<>();
     }
 
     public TrieNode getParent() {
@@ -49,10 +48,31 @@ public class TrieNode {
         return diffIndex;
     }
 
-    public Rule getRule() {
-        return rule;
+    public String getPrefix() {
+        return prefix;
     }
 
+    // Rule methods
+    public boolean hasRule(Character character) {
+        return rules.containsKey(character);
+    }
+
+    public Rule getRule(Character character) {
+        return rules.get(character);
+    }
+
+    public void addRule(Character character, Rule rule) {
+        assert !rules.containsKey(character);
+        assert !children.containsKey(character);
+        rules.put(character, rule);
+    }
+
+    public Rule removeRule(Character character) {
+        assert rules.containsKey(character);
+        return rules.remove(character);
+    }
+
+    // Child methods
     public boolean hasChild(Character character) {
         return children.containsKey(character);
     }
@@ -62,27 +82,18 @@ public class TrieNode {
     }
 
     public void addChild(Character character, TrieNode trieNode) {
-        if (children.containsKey(character)) {
-            throw new IllegalArgumentException("Child for character " + character + " already exists");
-        }
-
+        assert !children.containsKey(character);
+        assert !rules.containsKey(character);
         children.put(character, trieNode);
     }
 
     public TrieNode removeChild(Character character) {
-        if (!children.containsKey(character)) {
-            throw new IllegalArgumentException("Child for character " + character + " does not exist");
-        }
-
+        assert children.containsKey(character);
         return children.remove(character);
     }
 
     public void replaceChild(Character character, TrieNode trieNode) {
         children.put(character, trieNode);
-    }
-
-    public String getPrefix() {
-        return prefix;
     }
 }
 

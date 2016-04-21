@@ -42,6 +42,33 @@ public class RuleTrie {
     }
 
     private static void insertRec(TrieNode node, Rule rule, int curIndex) {
+        // TODO: Make sure this is the right character. Am I at the previous spot or the current spot?
+        Character current = rule.getPathMatch().charAt(curIndex);
+
+        // case 1: No rule or child for the current character
+        //   - add rule at current character spot in current node
+        // case 2: Child for current character
+        //   - recurse to child
+        // case 3: Rule for current character
+        //   - pull rule out, create a new child node, and re-insert
+        //   - make sure to check for equality
+        if (!node.hasRule(current) && !node.hasChild(current)) {
+            // insert node
+            node.addRule(current, rule);
+        } else if (node.hasChild(current)) {
+            // recurse
+            // get common substring
+            insertRec(node.getChild(current, rule, ))
+        } else if (node.hasRule(current)) {
+            // pull rule out, create new child node and re-insert
+            Rule existing = node.removeRule(current);
+            TrieNode newChild = new TrieNode(node, -1, "")
+        } else {
+            throw new IllegalStateException("Both a rule and child exist for the same character.");
+        }
+
+
+
         // Branch node
         if (node.getRule() == null) {
             Character current = NULL;
@@ -93,7 +120,7 @@ public class RuleTrie {
         parent.removeChild(coreNode.getPrefix().charAt(parentPrefix.length()));
         parent.addChild(prefix.charAt(parentPrefix.length()), replacement);
 
-        // 
+        //
     }
 
     private static void splitLeafNode(TrieNode leafNode, Rule rule) {
